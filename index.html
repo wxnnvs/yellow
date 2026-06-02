@@ -3,6 +3,13 @@
 
 <head>
   <title>Yellow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Parisienne&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap"
+    rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -39,7 +46,29 @@
     #loader {
       display: none;
     }
+
+    #header {
+      text-align: center;
+      margin: 40px 0;
+
+      background: linear-gradient(90deg, #f9d423 0%, #ff4e50 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      font-size: 2rem;
+    }
+
+    .parisienne-regular {
+      font-family: "Parisienne", cursive;
+      font-weight: 400;
+      font-style: normal;
+    }
   </style>
+
+  <div id="header">
+    <h1 class="parisienne-regular">Yellow</h1>
+  </div>
+
   <div class="masonry">
     <!-- Each item must have aspect-ratio set by --width and --height CSS variables -->
     <div class="frame" style="--width: 1268; --height: 1130;">
@@ -139,7 +168,7 @@
 
     // infinite scroll: load when near bottom
     window.addEventListener('scroll', () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - document.body.offsetHeight * 0.3) {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - document.body.offsetHeight * 0.35) {
         loadMoreImages()
       }
     })
