@@ -1,87 +1,151 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
-<title>Yellow</title>
+  <title>Yellow</title>
 </head>
+
 <body>
-<style>
-.masonry {
-  /* Required styles */
-  display: grid;
-  overflow: hidden;
-  /* Optional styles */
-  gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-}
+  <style>
+    .masonry {
+      /* Required styles */
+      display: grid;
+      overflow: hidden;
+      /* Optional styles */
+      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
 
-.frame {
-  /* Required styles */
-  aspect-ratio: var(--width) / var(--height);
-}
+    .frame {
+      /* Required styles */
+      aspect-ratio: var(--width) / var(--height);
+    }
 
-.frame img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
+    .frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
 
-  border-radius: 8px;
-}
+      border-radius: 8px;
+    }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
 
-</style>
-<div class="masonry">
-  <!-- Each item must have aspect-ratio set by --width and --height CSS variables -->
-  <div class="frame" style="--width: 1268; --height: 1130;">
-    <img src="./images/1.png" alt="1" />
+    #loader {
+      display: none;
+    }
+  </style>
+  <div class="masonry">
+    <!-- Each item must have aspect-ratio set by --width and --height CSS variables -->
+    <div class="frame" style="--width: 1268; --height: 1130;">
+      <img src="./images/1.png" alt="1" />
+    </div>
+    <div class="frame" style="--width: 1514; --height: 1589;">
+      <img src="./images/2.png" alt="2" />
+    </div>
+    <div class="frame" style="--width: 832; --height: 783;">
+      <img src="./images/3.png" alt="3" />
+    </div>
+    <div class="frame" style="--width: 1500; --height: 1164;">
+      <img src="./images/4.png" alt="4" />
+    </div>
+    <div class="frame" style="--width: 2000; --height: 1500;">
+      <img src="./images/5.png" alt="5" />
+    </div>
+    <div class="frame" style="--width: 866; --height: 659;">
+      <img src="./images/6.png" alt="6" />
+    </div>
+    <div class="frame" style="--width: 1419; --height: 851;">
+      <img src="./images/7.png" alt="7" />
+    </div>
+    <div class="frame" style="--width: 1244; --height: 1021;">
+      <img src="./images/8.png" alt="8" />
+    </div>
+    <div class="frame" style="--width: 1063; --height: 1827;">
+      <img src="./images/9.png" alt="9" />
+    </div>
+    <div class="frame" style="--width: 1325; --height: 1343;">
+      <img src="./images/10.png" alt="10" />
+    </div>
   </div>
-  <div class="frame" style="--width: 1514; --height: 1589;">
-    <img src="./images/2.png" alt="2" />
-  </div>
-  <div class="frame" style="--width: 832; --height: 783;">
-    <img src="./images/3.png" alt="3" />
-  </div>
-  <div class="frame" style="--width: 1500; --height: 1164;">
-    <img src="./images/4.png" alt="4" />
-  </div>
-  <div class="frame" style="--width: 2000; --height: 1500;">
-    <img src="./images/5.png" alt="5" />
-  </div>
-  <div class="frame" style="--width: 866; --height: 659;">
-    <img src="./images/6.png" alt="6" />
-  </div>
-  <div class="frame" style="--width: 1419; --height: 851;">
-    <img src="./images/7.png" alt="7" />
-  </div>
-  <div class="frame" style="--width: 1244; --height: 1021;">
-    <img src="./images/8.png" alt="8" />
-  </div>
-  <div class="frame" style="--width: 1063; --height: 1827;">
-    <img src="./images/9.png" alt="9" />
-  </div>
-  <div class="frame" style="--width: 1325; --height: 1343;">
-    <img src="./images/10.png" alt="10" />
-  </div>
-</div>
-<script type="module">
-import { BalancedMasonryGrid } from 'https://cdn.skypack.dev/@masonry-grid/vanilla'
 
-window.onload = () => {
-  // randomise the order of the items
-  const items = Array.from(document.querySelectorAll('.frame'))
-  items.sort(() => Math.random() - 0.5)
-  items.forEach(item => item.parentNode.appendChild(item))
-}
+  <div id="loader">
+    <p>loading more images ...</p>
+  </div>
 
-new BalancedMasonryGrid(document.querySelector('.masonry'))
+  <script type="module">
+    import { BalancedMasonryGrid } from 'https://cdn.skypack.dev/@masonry-grid/vanilla'
+
+    // randomise initial items and capture originals for infinite re-use
+    let originalFrames = []
+    window.onload = () => {
+      const container = document.querySelector('.masonry')
+      const items = Array.from(container.querySelectorAll('.frame'))
+      items.sort(() => Math.random() - 0.5)
+      items.forEach(item => item.parentNode.appendChild(item))
+
+      // capture clones of the original frames to reuse when loading more
+      originalFrames = Array.from(container.querySelectorAll('.frame')).map(f => f.cloneNode(true))
+
+      for (let i = 0; i < 3; i++) {
+        loadMoreImages();
+      }
+    }
+
+    new BalancedMasonryGrid(document.querySelector('.masonry'))
+
+    let imageCount = 0
+    const imagesPerLoad = 10
+    let isLoading = false
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array
+    }
+
+    function loadMoreImages() {
+      if (isLoading) return
+      const loader = document.getElementById('loader')
+      loader.style.display = 'block'
+      isLoading = true
+
+      setTimeout(() => {
+        if (originalFrames.length === 0) {
+          loader.style.display = 'none'
+          isLoading = false
+          return
+        }
+
+        // append a shuffled copy of the original images
+        const shuffled = shuffle(originalFrames.map(f => f.cloneNode(true)))
+        // Limit to imagesPerLoad if needed (will use all originals by default)
+        for (let i = 0; i < Math.min(imagesPerLoad, shuffled.length); i++) {
+          document.querySelector('.masonry').appendChild(shuffled[i])
+          imageCount++
+        }
+
+        loader.style.display = 'none'
+        isLoading = false
+      }, 600)
+    }
+
+    // infinite scroll: load when near bottom
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - document.body.offsetHeight * 0.3) {
+        loadMoreImages()
+      }
+    })
 
 
-
-</script>
+  </script>
 </body>
+
 </html>
